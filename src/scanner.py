@@ -1,5 +1,5 @@
 import argparse
-import subprocess
+#import subprocess
 import json
 from bandit.core import manager
 
