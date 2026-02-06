@@ -11,7 +11,8 @@ def run_security_scan(target_path, ai_platform):
     result = subprocess.run(
         ["bandit", "-r", target_path, "-f", "json"], 
         capture_output=True, 
-        text=True
+        text=True,
+        shell=False
     )
     
     # Bandit devuelve código 1 si encuentra vulnerabilidades
