@@ -1,11 +1,11 @@
 import os
 
-def analyze_with_ai(vulnerabilities_json, ai_service):
-    # Prompt para darle el rol de experto en seguridad
+def analyze_with_ai(vulnerabilities_data, ai_service):
+    # Security analysis prompt for the AI
     prompt = f"""
-    Eres un experto en DevSecOps y Python encargado de supervisar el código subido a un repositorio. Analiza estos resultados de Bandit (JSON) con el propósito de asegurar un código seguro:
+    Eres un experto en DevSecOps y Python encargado de supervisar el código subido a un repositorio. Analiza estos resultados de Bandit (Dict) con el propósito de asegurar un código seguro:
     '''
-    {vulnerabilities_json}
+    {vulnerabilities_data}
     '''
     Para cada vulnerabilidad:
     1. Explica el riesgo (El porqué el código escrito es vulnerable).
@@ -14,7 +14,7 @@ def analyze_with_ai(vulnerabilities_json, ai_service):
     La respuesta debe ser en formato Markdown usando encabezados (##), comparación de código vulnerable y código seguro mediante tablas, todo manteniendo la sintaxis de Python.
     """
     
-    # Lógica de llamada a la API
+    # API call logic for both OpenAI and Gemini (would be better to have a unified interface)
     try:
         if ai_service == "openai":
             from openai import OpenAI 
@@ -39,11 +39,11 @@ def analyze_with_ai(vulnerabilities_json, ai_service):
             )
             response_text = response.text
         else:
-            print("Servicio de IA no reconocido")
+            print("AI service not recognized")
             return ""
 
     except Exception as e:
-        print(f"Error al conectar con la plataforma de IA: {e}")
+        print(f"Error connecting to AI platform: {e}")
         return ""
     
     return response_text

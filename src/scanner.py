@@ -1,49 +1,50 @@
 import argparse
-#import subprocess
 import json
+import os
 from bandit.core import manager
 
 from ai_advisor import analyze_with_ai
 
-def run_bandit(target_path):
+def run_bandit(absolute_path):
     bandit_mgr = manager.BanditManager()
-    bandit_mgr.discover_files([target_path])
+    bandit_mgr.discover_files([absolute_path])
     bandit_mgr.run_tests()
 
     results = bandit_mgr.get_issue_list()
     return results
 
 def run_security_scan(target_path, ai_platform):
-    print(f"🚀 Iniciando escaneo de seguridad en {target_path}...")
+    print(f"🚀 Initializing security scanning in {target_path}...")
+    absolute_path = os.path.abspath(target_path)
+
+    if not os.path.exists(absolute_path):
+        print(f"❌ {absolute_path} path doesn't exist.")
+        return
     
-    # Se ejecuta Bandit sobre la carpeta base
-    # Se detectó riesgo de shell injection, por lo que se evita usar shell=True
-    # Bandit sigue detectando vulnerabilidades, asi que se opta por usar bandit directamente
+    print(f"🔍 Scanning started at: {absolute_path} using {ai_platform}")
+
+    results = run_bandit(absolute_path)
     
-    #result = subprocess.run(
-    #    ["bandit", "-r", target_path, "-f", "json"], 
-    #    capture_output=True, 
-    #    text=True,
-    #    shell=False
-    #)
+    # Bandit returns 1 if it finds vulnerabilities
     
-    result = run_bandit(target_path)
-    
-    # Bandit devuelve código 1 si encuentra vulnerabilidades
-    scan_data = json.loads(result.stdout)
-    
-    if scan_data['results']:
-        print(f"⚠️ Se encontraron {len(scan_data['results'])} vulnerabilidades.")
-        # Se envía lo detectado a la IA para obtener sugerencias
-        report = analyze_with_ai(scan_data, ai_platform)
-        print("\n--- REPORTE DE IA ---\n")
+    if results:
+        print(f"⚠️ Found {len(results)} vulnerabilities.")
+        vuln_data = [results.to_dict() for result in results]
+
+        report = analyze_with_ai(vuln_data, ai_platform)
+        print("\n--- AI Security Report ---\n")
         print(report)
+
+        # Write to GitHub Step Summary if running in a CI
+        if os.getenv('GITHUB_STEP_SUMMARY'):
+            with open(os.getenv('GITHUB_STEP_SUMMARY'), 'a') as summary:
+                summary.write(f"## 🛡️ PyGuardIA Analysis\n{report}")
     else:
-        print("✅ No se detectaron vulnerabilidades críticas.")
+        print("✅ No vulnerabilities found.")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--path", default="./src", help="Ruta del código a evaluar")
-    parser.add_argument("--ai_platform", default="gemini", choices=["gemini", "openai"], help="Servicio de IA a utilizar ('gemini', 'openai')")
+    parser.add_argument("--path", default="./src", help="Path to scan for vulnerabilities (default: './src')")
+    parser.add_argument("--ai_platform", default="gemini", choices=["gemini", "openai"], help="AI Platform to use ('gemini', 'openai')")
     args = parser.parse_args()
     run_security_scan(args.path, args.ai_platform)
