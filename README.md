@@ -9,7 +9,7 @@ PyGuardIA is a Static Application Security Testing (SAST) tool. By combining __B
 ## ⚡Quick Start ##
 Add this to your repository at `.github/workflows/security-scan.yml` to automatically audit your code on every push.
 
-~~~
+~~~ YAML
 name: PyGuardIA Audit
 
 on:
@@ -41,16 +41,12 @@ jobs:
 If you prefer to run the tool locally:
 
 __1. Clone the repository:__
-~~~
-Bash
-
+~~~Bash
 git clone https://github.com/pleskr011/PyGuardIA.git
 cd PyGuardIA
 ~~~
 __2. Install dependencies:__
-~~~
-Bash
-
+~~~Bash
 pip install -r requirements.txt
 ~~~
 __3. Usage:__ The script accepts two main arguments:
@@ -59,9 +55,7 @@ __3. Usage:__ The script accepts two main arguments:
 
 - `--ai_platform`: The AI engine to use (`openai` or `gemini`).
 
-~~~
-Bash
-
+~~~Bash
 python src/scanner.py --path ./my_project --ai_platform gemini
 ~~~
 ## 🔒 Security by Design (Development experience) ##
