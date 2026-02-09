@@ -2,11 +2,13 @@ import argparse
 import json
 import os
 from bandit.core import manager
+from bandit.core import config as b_config
 
 from ai_advisor import analyze_with_ai
 
 def run_bandit(absolute_path):
-    bandit_mgr = manager.BanditManager()
+    cfg = b_config.BanditConfig()
+    bandit_mgr = manager.BanditManager(cfg, agg_type='grouped')
     bandit_mgr.discover_files([absolute_path])
     bandit_mgr.run_tests()
 
