@@ -15,6 +15,7 @@ COPY --chown=devsecuser:devsecuser src/ ./src/
 # Variables de entorno por defecto
 ENV SCAN_PATH="./src"
 ENV AI_PLATFORM="gemini"
+ENV AI_API_KEY=""
 
 # Ejecutar el scanner al iniciar
 CMD ["sh", "-c", "python src/scanner.py --path $SCAN_PATH --ai_platform $AI_PLATFORM"]
