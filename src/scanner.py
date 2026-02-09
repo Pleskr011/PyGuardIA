@@ -9,12 +9,11 @@ from ai_advisor import analyze_with_ai
 def run_bandit(absolute_path):
     cfg = b_config.BanditConfig()
     bandit_mgr = manager.BanditManager(cfg, agg_type='grouped')
-    bandit_mgr.discover_files([absolute_path])
+    bandit_mgr.discover_files([absolute_path], recursive=True)
     bandit_mgr.run_tests()
-
-    results = bandit_mgr.get_issue_list()
-    print("DEBUG", results)
-    return results
+    # Get the list of Issue objects found by Bandit
+    issues = bandit_mgr.get_issue_list()
+    return issues
 
 def run_security_scan(target_path, ai_platform):
     print(f"🚀 Initializing security scanning in {target_path}...")
@@ -32,9 +31,10 @@ def run_security_scan(target_path, ai_platform):
     
     if results:
         print(f"⚠️ Found {len(results)} vulnerabilities.")
-        vuln_data = [results.to_dict() for result in results]
-
-        report = analyze_with_ai(vuln_data, ai_platform)
+        vuln_data = [result.as_dict() for result in results]
+        json_vuln_data = json.dumps(vuln_data, indent=2)
+        print(f"Analyzing vulnerabilities with AI platform: {ai_platform}...")
+        report = analyze_with_ai(json_vuln_data, ai_platform)
         print("\n--- AI Security Report ---\n")
         print(report)
 

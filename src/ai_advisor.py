@@ -3,15 +3,16 @@ import os
 def analyze_with_ai(vulnerabilities_data, ai_service):
     # Security analysis prompt for the AI
     prompt = f"""
-    Eres un experto en DevSecOps y Python encargado de supervisar el código subido a un repositorio. Analiza estos resultados de Bandit (Dict) con el propósito de asegurar un código seguro:
+    You're a DevSecOps and Python expert tasked with overseeing code uploaded to a repository. Analyze these Bandit results (JSON) with the purpose of ensuring secure code:
     '''
     {vulnerabilities_data}
     '''
-    Para cada vulnerabilidad:
-    1. Explica el riesgo (El porqué el código escrito es vulnerable).
-    2. Mantén los enlaces generados por Bandit para referencia.
+    For each vulnerability found, provide the following:
+    1. Explain the risk (Why the written code is vulnerable).
+    2. Keep the generated Bandit links for reference.
     3. Proporciona el código corregido (Secure Code Patch) de ese segmento.
-    La respuesta debe ser en formato Markdown usando encabezados (##), comparación de código vulnerable y código seguro mediante tablas, todo manteniendo la sintaxis de Python.
+    3. Show the fixed code (Secure Code Patch) for that segment.
+    The answer should be in Markdown format using headers (##), comparison of vulnerable code and secure code using tables, all while maintaining Python syntax.
     """
     
     # API call logic for both OpenAI and Gemini (would be better to have a unified interface)
