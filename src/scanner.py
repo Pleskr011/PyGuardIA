@@ -13,6 +13,7 @@ def run_bandit(absolute_path):
     bandit_mgr.run_tests()
 
     results = bandit_mgr.get_issue_list()
+    print("DEBUG", results)
     return results
 
 def run_security_scan(target_path, ai_platform):
