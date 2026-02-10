@@ -1,4 +1,5 @@
 import os
+import sys
 
 def analyze_with_ai(vulnerabilities_data, ai_service):
     # Security analysis prompt for the AI
@@ -20,7 +21,7 @@ def analyze_with_ai(vulnerabilities_data, ai_service):
         api_key_ai = os.getenv("AI_API_KEY")
         if not api_key_ai:
             print("AI_API_KEY environment variable not set.")
-            return ""
+            sys.exit(1)
         if ai_service == "openai":
             from openai import OpenAI 
             client = OpenAI(api_key=api_key_ai)
@@ -34,7 +35,7 @@ def analyze_with_ai(vulnerabilities_data, ai_service):
             from google import genai
             from google.genai import types
             client = genai.Client(api_key=str(api_key_ai))
-            response = client.responses.generate_content(
+            response = client.models.generate_content(
                 model="gemini-3-flash-preview",
                 contents=prompt,
                 config=types.GenerateContentConfig(
@@ -44,10 +45,10 @@ def analyze_with_ai(vulnerabilities_data, ai_service):
             response_text = response.text
         else:
             print("AI service not recognized")
-            return ""
+            sys.exit(1)
 
     except Exception as e:
         print(f"Error connecting to AI platform: {e}")
-        return ""
+        sys.exit(1)
     
     return response_text

@@ -1,6 +1,7 @@
 import argparse
 import json
 import os
+import sys
 from bandit.core import manager
 from bandit.core import config as b_config
 
@@ -21,7 +22,7 @@ def run_security_scan(target_path, ai_platform):
 
     if not os.path.exists(absolute_path):
         print(f"❌ {absolute_path} path doesn't exist.")
-        return
+        sys.exit(1)
     
     print(f"🔍 Scanning started at: {absolute_path} using {ai_platform}")
 
