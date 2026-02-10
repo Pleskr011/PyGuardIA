@@ -17,13 +17,13 @@ def analyze_with_ai(vulnerabilities_data, ai_service):
     
     # API call logic for both OpenAI and Gemini (would be better to have a unified interface)
     try:
+        api_key_ai = os.getenv("AI_API_KEY")
+        if not api_key_ai:
+            print("AI_API_KEY environment variable not set.")
+            return ""
         if ai_service == "openai":
             from openai import OpenAI 
-            api_openai = os.getenv("OPENAI_API_KEY")
-            if not api_openai:
-                print("OPENAI_API_KEY environment variable not set.")
-                return ""
-            client = OpenAI(api_key=api_openai)
+            client = OpenAI(api_key=api_key_ai)
             response = client.responses.create(
                 model="gpt-5",
                 input=prompt,
@@ -33,11 +33,7 @@ def analyze_with_ai(vulnerabilities_data, ai_service):
         elif ai_service == "gemini":
             from google import genai
             from google.genai import types
-            api_gemini = os.getenv("GEMINI_API_KEY")
-            if not api_gemini:
-                print("GEMINI_API_KEY environment variable not set.")
-                return ""
-            client = genai.Client(api_key=str(api_gemini))
+            client = genai.Client(api_key=str(api_key_ai))
             response = client.responses.generate_content(
                 model="gemini-3-flash-preview",
                 contents=prompt,
