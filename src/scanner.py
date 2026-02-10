@@ -40,9 +40,16 @@ def run_security_scan(target_path, ai_platform):
         print(report)
 
         # Write to GitHub Step Summary if running in a CI
-        if os.getenv('GITHUB_STEP_SUMMARY'):
-            with open(os.getenv('GITHUB_STEP_SUMMARY'), 'a') as summary:
-                summary.write(f"## 🛡️ PyGuardIA Analysis\n{report}")
+        summary_path = os.getenv('GITHUB_STEP_SUMMARY')
+        if summary_path:
+            try:
+                with open(summary_path, 'a', encoding='utf-8') as f:
+                    f.write(f"## 🛡️ PyGuardIA Analysis\n{report}")
+                print(f"✅ PyGuardIA report written to Github Step Summary.")
+            except Exception as e:
+                print(f"❌ Error writing to Github Step Summary: {e}")
+        else:
+            print("⚠️ GITHUB_STEP_SUMMARY environment variable not set, skipping visual report.")
     else:
         print("✅ No vulnerabilities found.")
 
