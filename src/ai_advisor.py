@@ -19,8 +19,11 @@ def analyze_with_ai(vulnerabilities_data, ai_service):
     try:
         if ai_service == "openai":
             from openai import OpenAI 
-            api_key = os.getenv("OPENAI_API_KEY")
-            client = OpenAI(api_key=api_key)
+            api_openai = os.getenv("OPENAI_API_KEY")
+            if not api_openai:
+                print("OPENAI_API_KEY environment variable not set.")
+                return ""
+            client = OpenAI(api_key=api_openai)
             response = client.responses.create(
                 model="gpt-5",
                 input=prompt,
@@ -30,7 +33,11 @@ def analyze_with_ai(vulnerabilities_data, ai_service):
         elif ai_service == "gemini":
             from google import genai
             from google.genai import types
-            client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
+            api_gemini = os.getenv("GEMINI_API_KEY")
+            if not api_gemini:
+                print("GEMINI_API_KEY environment variable not set.")
+                return ""
+            client = genai.Client(api_key=str(api_gemini))
             response = client.responses.generate_content(
                 model="gemini-3-flash-preview",
                 contents=prompt,
